@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Axios from "axios";
+import DispatchContext from "../DispatchContext";
 
 // props is used for turnary operator on the header loggedin/out feature
 // refer to Header.js for prop being passed
 function HeaderLoggedOut(props) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
+  const appDispatch = useContext(DispatchContext);
 
   const alignment = {
     marginLeft: "auto",
@@ -17,13 +19,11 @@ function HeaderLoggedOut(props) {
     try {
       const response = await Axios.post("/login", { username, password });
       if (response.data) {
-        // Local storage tokens
-        localStorage.setItem("complexappToken", response.data.token);
-        localStorage.setItem("complexappUsername", response.data.username);
-        localStorage.setItem("complexappAvatar", response.data.avatar);
-        props.setLoggedIn(true);
+        appDispatch({ type: "login", data: response.data });
+        appDispatch({ type: "flashMessage", value: "You have successfully logged in" });
       } else {
         console.log("Incorrect username/password");
+        appDispatch({ type: "flashMessage", value: "Invalid username / password" });
       }
     } catch (e) {
       console.log("there was a problem");

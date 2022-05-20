@@ -1,31 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Page from "./Page";
 import Axios from "axios";
+import DispatchContext from "../DispatchContext";
+import StateContext from "../StateContext";
 
-function Withdraw() {
+function Withdraw(props) {
   // const [title, setTitle] = useState();
   const [body, setBody] = useState();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
+  const appDispatch = useContext(DispatchContext);
+  const appState = useContext(StateContext);
+
   async function handleWithdraw(e) {
     e.preventDefault();
     try {
-      await Axios.post("/create-post", { title: "Withdraw", body, token: localStorage.getItem("complexappToken") });
+      const response = await Axios.post("/create-post", { title: "Withdraw", body, token: appState.user.token });
       // redirect to all data URL
-      navigate("alldata");
-      console.log("deposit was created");
+      navigate(`/alldata/${appState.user.username}`);
+      appDispatch({ type: "flashMessage", value: "Withdrawl was successful!" });
+      console.log("withdraw was created");
     } catch (e) {
-      console.log("there was a problem with withdraw");
+      console.log("there was a problem with withdraw", e);
     }
   }
 
   return (
-    <Page tite="Withdraw Funds">
+    <Page title="Withdraw Funds">
       <div id="cards" className="card text-center">
         <div className="card-header">Withdraw Funds</div>
         <div className="card-body">
           <h5 className="card-title">Select amount to withdraw</h5>
-          <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          {/* <p className="card-text">With supporting text below as a natural lead-in to additional content.</p> */}
           <div className="input-group mb-3">
             <div className="input-group-prepend">
               <span className="input-group-text">$</span>

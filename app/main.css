@@ -21,10 +21,6 @@ body {
   top: 3px;
 }
 
-#cards {
-  width: 200px;
-}
-
 .chat-count-badge {
   text-align: center;
   position: absolute;
@@ -70,8 +66,8 @@ body {
   margin-bottom: 1.75rem;
 }
 
-.input-light {
-  background-color: rgb(219, 219, 219);
+.input-dark {
+  background-color: #444;
   border-color: transparent;
   color: #ffffff;
 }

@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Page from "./Page";
 import { Link } from "react-router-dom";
+import StateContext from "../StateContext";
 
 const style = {
   width: "16rem",
@@ -10,11 +11,15 @@ const style = {
 };
 
 function Home() {
+  const appState = useContext(StateContext);
+
   return (
     <Page title="Home Page">
       <div className="card text-center">
         <div className="card-header">
-          Welcome, <strong>{localStorage.getItem("complexappUsername")}!</strong>
+          <h5>
+            Welcome, <strong>{appState.user.username}!</strong>
+          </h5>
         </div>
         <img className="card-img-top" src="./components/bank.png" style={style} alt="Card image cap"></img>
         <div className="card-body">
@@ -26,11 +31,13 @@ function Home() {
           <Link to="/withdraw" className="btn btn-primary">
             Withdraw
           </Link>{" "}
-          <Link to="/alldata" className="btn btn-primary">
+          <Link to={`/alldata/${appState.user.username}`} className="btn btn-primary">
             All Data
           </Link>
         </div>
-        <div className="card-footer text-muted"></div>
+        <div className="card-footer text-muted">
+          <strong>Current Balance: $ ...</strong>
+        </div>
       </div>
     </Page>
   );

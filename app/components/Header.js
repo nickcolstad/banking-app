@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import HeaderLoggedOut from "./HeaderLoggedOut";
 import HeaderLoggedIn from "./HeaderLoggedIn";
+import StateContext from "../StateContext";
 
 function Header(props) {
+  const appState = useContext(StateContext);
+
   return (
     <header className="navbar navbar-expand-lg navbar-dark bg-dark">
       <Link className="navbar-brand" to="/">
@@ -13,7 +16,7 @@ function Header(props) {
         <span className="navbar-toggler-icon"></span>
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
-        {props.loggedIn ? <HeaderLoggedIn setLoggedIn={props.setLoggedIn} /> : <HeaderLoggedOut setLoggedIn={props.setLoggedIn} />}
+        {appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />}
       </div>
     </header>
   );

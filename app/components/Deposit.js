@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Page from "./Page";
 import Axios from "axios";
+import DispatchContext from "../DispatchContext";
+import StateContext from "../StateContext";
 
-function Deposit() {
+function Deposit(props) {
   // const [title, setTitle] = useState();
   const [body, setBody] = useState();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
+  const appDispatch = useContext(DispatchContext);
+  const appState = useContext(StateContext);
+
   async function handleDeposit(e) {
     e.preventDefault();
     try {
-      const response = await Axios.post("/create-post", { title: "Deposit", body, token: localStorage.getItem("complexappToken") });
+      const response = await Axios.post("/create-post", { title: "Deposit", body, token: appState.user.token });
       // redirect to all data URL
-      console.log("------");
-      navigate("/alldata");
-      console.log("------");
+      navigate(`/alldata/${appState.user.username}`);
+      appDispatch({ type: "flashMessage", value: "Deposit was successful" });
       console.log("deposit was created");
     } catch (e) {
       console.log("there was a problem with deposit", e);
@@ -22,12 +26,12 @@ function Deposit() {
   }
 
   return (
-    <Page tite="Deposit Funds">
+    <Page title="Deposit Funds">
       <div id="cards" className="card text-center">
         <div className="card-header">Deposit Funds</div>
         <div className="card-body">
           <h5 className="card-title">Select amount to depsoit</h5>
-          <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          {/* <p className="card-text">With supporting text below as a natural lead-in to additional content.</p> */}
           <div className="input-group mb-3">
             <div className="input-group-prepend">
               <span className="input-group-text">$</span>
@@ -37,7 +41,7 @@ function Deposit() {
               <span className="input-group-text">.00</span>
             </div>
           </div>
-          <button onClick={handleDeposit} href="/" className="btn btn-success">
+          <button onClick={handleDeposit} href="" className="btn btn-success">
             Deposit
           </button>
         </div>
@@ -48,5 +52,9 @@ function Deposit() {
     </Page>
   );
 }
+
+require("react-dom");
+window.React2 = require("react");
+console.log(window.React1 === window.React2);
 
 export default Deposit;

@@ -1,22 +1,19 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useContext } from "react";
+import { Link, useHistory, useNavigate } from "react-router-dom";
+import DispatchContext from "../DispatchContext";
+import StateContext from "../StateContext";
 
 // props is used on the signout button to render the loggedin header as false
 function HeaderLoggedIn(props) {
-  function handleLogout() {
-    props.setLoggedIn(false);
-    // Handles removal of the local storage token when signing out
-    localStorage.removeItem("complexappToken");
-    localStorage.removeItem("complexappUsername");
-    localStorage.removeItem("complexappAvatar");
-  }
+  const appDispatch = useContext(DispatchContext);
+  const appState = useContext(StateContext);
+  const navigate = useNavigate();
 
-  // Override css style for profile avatar
-  const style = {
-    width: "32px",
-    height: "32px",
-    borderRadius: "16px"
-  };
+  function handleLogout() {
+    appDispatch({ type: "logout" });
+    appDispatch({ type: "flashMessage", value: "You have successfully logged out" });
+    navigate("/");
+  }
 
   const alignment = {
     marginLeft: "auto",
@@ -37,17 +34,14 @@ function HeaderLoggedIn(props) {
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/alldata">
+          <Link className="nav-link" to={`/alldata/${appState.user.username}`}>
             All Data
           </Link>
         </li>
       </ul>
       <div style={alignment} className="flex-row my-3 my-md-0">
-        <Link to="/" className="text-white mr-2 header-search-icon">
-          <i className="fas fa-search"></i>
-        </Link>
-        <Link to="/" className="mr-2">
-          <img style={style} className="small-header-avatar" src={localStorage.getItem("complexappAvatar")} alt="avatar image" />
+        <Link to={`/alldata/${appState.user.username}`} className="mr-2">
+          <img className="avatar-small" src={appState.user.avatar} alt="avatar image" />
         </Link>
         <button onClick={handleLogout} className="btn btn-sm btn-secondary">
           Sign Out
