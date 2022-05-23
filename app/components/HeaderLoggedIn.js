@@ -24,13 +24,18 @@ function HeaderLoggedIn(props) {
     <>
       <ul className="navbar-nav">
         <li className="nav-item">
-          <Link className="nav-link" to="/deposit">
+          <Link className="nav-link" to={`/deposit/${appState.user.username}`}>
             Deposit
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/withdraw">
+          <Link className="nav-link" to={`/withdraw/${appState.user.username}`}>
             Withdraw
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link className="nav-link" to={`/manage/${appState.user.username}`}>
+            Manage Funds
           </Link>
         </li>
         <li className="nav-item">

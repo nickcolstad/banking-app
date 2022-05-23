@@ -3,15 +3,21 @@ import Page from "./Page";
 import { useParams } from "react-router-dom";
 import Axios from "axios";
 import StateContext from "../StateContext";
-import Transactions from "./Transactions";
+import { useImmer } from "use-immer";
 
 function Alldata() {
-  const { username } = useParams();
-  const appState = useContext(StateContext);
   const [profileData, setProfileData] = useState({
     profileUsername: "...",
     profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
-    counts: { postCount: "", followerCount: "", followingCount: "" }
+    counts: { postCount: "" }
+  });
+  // const [isLoading, setIsLoading] = useState(true);
+  const [posts, setPosts] = useState([]);
+  const { username } = useParams();
+  const appState = useContext(StateContext);
+  const [state, setState] = useImmer({
+    isLoading: true,
+    feed: []
   });
 
   useEffect(() => {
@@ -26,6 +32,37 @@ function Alldata() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const response = await Axios.get(`/profile/${username}/posts`);
+        setPosts(response.data);
+        // setIsLoading(false);
+        setState(draft => {
+          draft.isLoading = false;
+          draft.feed = response.data;
+        });
+      } catch (e) {
+        console.log("There was a problem");
+      }
+    }
+    fetchPosts();
+  }, []);
+
+  console.log(posts);
+
+  function addBalance(prop) {
+    var bal = 0;
+    for (let i = 0; i < posts.length; i++) {
+      if (posts[i].title == "Deposit") {
+        bal += parseInt(posts[i].body);
+      } else {
+        bal -= parseInt(posts[i].body);
+      }
+    }
+    return bal;
+  }
+
   // img styling
   const style = {
     width: "32px",
@@ -33,27 +70,43 @@ function Alldata() {
     borderRadius: "16px"
   };
 
+  if (state.isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Page title="All-Data">
-      <h2>
-        <img className="avatar-small" src={profileData.profileAvatar} /> {profileData.profileUsername}
-        <button className="btn btn-primary btn-sm ml-2">
-          Follow <i className="fas fa-user-plus"></i>
-        </button>
-      </h2>
+      {state.feed.length > 0 && (
+        <>
+          <h2>
+            <img className="avatar-small" src={profileData.profileAvatar} /> {profileData.profileUsername}
+          </h2>
+          <div className="card">
+            <div className="card-body">Current Balance: ${addBalance(posts)}</div>
+          </div>
+          <div className="profile-nav nav nav-tabs pt-2 mb-4">
+            <a href="#" className="active nav-item nav-link">
+              Transactions: {profileData.counts.postCount}
+            </a>
+          </div>
+          {/* Transactions */}
+          <div className="list-group">
+            {posts.map(post => {
+              const date = new Date(post.createdDate);
+              const dateFormatted = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
-      <div className="profile-nav nav nav-tabs pt-2 mb-4">
-        <a href="#" className="active nav-item nav-link">
-          Transactions: {profileData.counts.postCount}
-        </a>
-        <a href="#" className="nav-item nav-link">
-          Account Info {profileData.counts.followerCount}
-        </a>
-        <a href="#" className="nav-item nav-link">
-          Withdrawls: {profileData.counts.followingCount}
-        </a>
-      </div>
-      <Transactions />
+              return (
+                <a key={post._id} href="" className="list-group-item list-group-item-action">
+                  <strong>{post.title}</strong>
+                  <span className="text-muted "> ${post.body}</span> <span className="text-muted small">on {dateFormatted} </span>
+                </a>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {state.feed.length == 0 && <div>No transactions yet</div>}
     </Page>
   );
 }

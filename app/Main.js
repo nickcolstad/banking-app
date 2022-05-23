@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { useImmerReducer } from "use-immer";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import Axios from "axios";
 Axios.defaults.baseURL = "http://localhost:8080";
 
@@ -19,6 +19,7 @@ import Deposit from "./components/Deposit";
 import Withdraw from "./components/Withdraw";
 import Alldata from "./components/Alldata";
 import FlashMessages from "./components/FlashMessages";
+import Manage from "./components/Manage";
 
 function Main() {
   const initialState = {
@@ -30,6 +31,9 @@ function Main() {
       avatar: localStorage.getItem("complexappAvatar")
     }
   };
+
+  const { username } = useParams();
+  const [posts, setPosts] = useState([]);
 
   function ourReducer(draft, action) {
     switch (action.type) {
@@ -60,6 +64,19 @@ function Main() {
     }
   }, [state.loggedIn]);
 
+  // useEffect(() => {
+  //   async function fetchPosts() {
+  //     try {
+  //       const response = await Axios.get(`/profile/${username}/posts`);
+  //       setPosts(response.data);
+  //       console.log("Posts received");
+  //     } catch (e) {
+  //       console.log("There was a problem", e);
+  //     }
+  //   }
+  //   fetchPosts();
+  // }, []);
+
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
@@ -71,8 +88,9 @@ function Main() {
             <Route path="/" element={state.loggedIn ? <Home /> : <HomeGuest />} />
             <Route path="/about-us" element={<About />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/deposit" element={<Deposit />} />
-            <Route path="/withdraw" element={<Withdraw />} />
+            <Route path="/deposit/:username/" element={<Deposit />} />
+            <Route path="/withdraw/:username/" element={<Withdraw />} />
+            <Route path="/manage/:username/" element={<Manage />} />
           </Routes>
           <Footer />
         </BrowserRouter>

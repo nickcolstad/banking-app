@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Page from "./Page";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import StateContext from "../StateContext";
 
 const style = {
@@ -12,6 +12,21 @@ const style = {
 
 function Home() {
   const appState = useContext(StateContext);
+  const [posts, setPosts] = useState();
+  const { username } = useParams;
+
+  // useEffect(() => {
+  //   async function fetchBalance() {
+  //     try {
+  //       const response = await Axios.get(`/profile/${username}/posts`);
+  //       setPosts(response.data);
+  //       setIsLoading(false);
+  //     } catch (e) {
+  //       console.log("There was a problem");
+  //     }
+  //   }
+  //   fetchBalance();
+  // }, []);
 
   return (
     <Page title="Home Page">
@@ -25,10 +40,10 @@ function Home() {
         <div className="card-body">
           <h5 className="card-title"></h5>
           <p className="card-text">Select an Action</p>
-          <Link to="/deposit" className="btn btn-primary">
+          <Link to={`/deposit/${appState.user.username}`} className="btn btn-primary">
             Deposit
           </Link>{" "}
-          <Link to="/withdraw" className="btn btn-primary">
+          <Link to={`/withdraw/${appState.user.username}`} className="btn btn-primary">
             Withdraw
           </Link>{" "}
           <Link to={`/alldata/${appState.user.username}`} className="btn btn-primary">

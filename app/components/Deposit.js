@@ -1,16 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Page from "./Page";
 import Axios from "axios";
 import DispatchContext from "../DispatchContext";
 import StateContext from "../StateContext";
+import GetBalance from "./GetBalance";
 
 function Deposit(props) {
-  // const [title, setTitle] = useState();
   const [body, setBody] = useState();
   const navigate = useNavigate();
   const appDispatch = useContext(DispatchContext);
   const appState = useContext(StateContext);
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { username } = useParams();
 
   async function handleDeposit(e) {
     e.preventDefault();
@@ -25,18 +28,35 @@ function Deposit(props) {
     }
   }
 
+  useEffect(() => {
+    async function fetchBalance() {
+      try {
+        const response = await Axios.get(`/profile/${username}/posts`);
+        setPosts(response.data);
+        setIsLoading(false);
+      } catch (e) {
+        console.log("There was a problem", e);
+      }
+    }
+    fetchBalance();
+  }, []);
+
+  // console.log("Deposits Posts = " + posts);
+
   return (
     <Page title="Deposit Funds">
       <div id="cards" className="card text-center">
-        <div className="card-header">Deposit Funds</div>
+        <div className="card-header">
+          <strong>Deposit Funds</strong>
+        </div>
         <div className="card-body">
-          <h5 className="card-title">Select amount to depsoit</h5>
+          <h5 className="card-title">Select amount to deposit</h5>
           {/* <p className="card-text">With supporting text below as a natural lead-in to additional content.</p> */}
           <div className="input-group mb-3">
             <div className="input-group-prepend">
               <span className="input-group-text">$</span>
             </div>
-            <input onChange={e => setBody(e.target.value)} autoFocus type="text" className="form-control" aria-label="Amount (to the nearest dollar)"></input>
+            <input onChange={e => setBody(e.target.value)} autoFocus type="number" className="form-control" aria-label="Amount (to the nearest dollar)"></input>
             <div className="input-group-append">
               <span className="input-group-text">.00</span>
             </div>
@@ -46,7 +66,7 @@ function Deposit(props) {
           </button>
         </div>
         <div className="card-footer text-muted">
-          <strong>Current Balance: $ ...</strong>
+          <strong></strong>
         </div>
       </div>
     </Page>
