@@ -6,6 +6,7 @@ import StateContext from "../StateContext";
 
 function Header(props) {
   const appState = useContext(StateContext);
+  const headerContent = appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />;
 
   function show() {}
 
@@ -18,7 +19,7 @@ function Header(props) {
         <span className="navbar-toggler-icon" onClick={show()}></span>
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
-        {appState.loggedIn ? <HeaderLoggedIn /> : <HeaderLoggedOut />}
+        {!props.staticEmpty ? headerContent : ""}
       </div>
     </header>
   );
