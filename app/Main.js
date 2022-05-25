@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import Axios from "axios";
-Axios.defaults.baseURL = "http://localhost:8080";
+Axios.defaults.baseURL = process.env.BACKENDURL || "https://afternoon-dawn-85630.herokuapp.com";
 
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
