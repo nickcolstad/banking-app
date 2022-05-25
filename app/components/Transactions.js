@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import Axios from "axios";
-import Page from "./Page";
 
 function Transactions() {
   const { username } = useParams();

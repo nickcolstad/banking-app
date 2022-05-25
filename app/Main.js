@@ -19,7 +19,7 @@ import Deposit from "./components/Deposit";
 import Withdraw from "./components/Withdraw";
 import Alldata from "./components/Alldata";
 import FlashMessages from "./components/FlashMessages";
-import Manage from "./components/Manage";
+import FetchBalance from "./components/FetchBalance";
 
 function Main() {
   const initialState = {
@@ -31,9 +31,6 @@ function Main() {
       avatar: localStorage.getItem("complexappAvatar")
     }
   };
-
-  const { username } = useParams();
-  const [posts, setPosts] = useState([]);
 
   function ourReducer(draft, action) {
     switch (action.type) {
@@ -64,18 +61,25 @@ function Main() {
     }
   }, [state.loggedIn]);
 
-  // useEffect(() => {
-  //   async function fetchPosts() {
-  //     try {
-  //       const response = await Axios.get(`/profile/${username}/posts`);
-  //       setPosts(response.data);
-  //       console.log("Posts received");
-  //     } catch (e) {
-  //       console.log("There was a problem", e);
-  //     }
-  //   }
-  //   fetchPosts();
-  // }, []);
+  // check if token has expired or not on first render
+  useEffect(() => {
+    if (state.loggedIn) {
+      const ourRequest = Axios.CancelToken.source();
+      async function fetchResults() {
+        try {
+          const response = await xios.post("/checkToken", { token: state.user.token });
+          if (!response.data) {
+            dispatch({ type: "logout" });
+            dispatch({ type: "flashMessage", value: "Your session has expired. Please login again" });
+          }
+        } catch (e) {
+          console.log("There was a problem or the request was canceled" + e);
+        }
+      }
+      fetchResults();
+      return () => ourRequest.cancel();
+    }
+  }, []);
 
   return (
     <StateContext.Provider value={state}>
@@ -90,7 +94,7 @@ function Main() {
             <Route path="/terms" element={<Terms />} />
             <Route path="/deposit/:username/" element={<Deposit />} />
             <Route path="/withdraw/:username/" element={<Withdraw />} />
-            <Route path="/manage/:username/" element={<Manage />} />
+            <Route path="/fetch/:username/" element={<FetchBalance />} />
           </Routes>
           <Footer />
         </BrowserRouter>

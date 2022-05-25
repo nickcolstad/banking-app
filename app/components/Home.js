@@ -3,30 +3,17 @@ import Page from "./Page";
 import { Link, useParams } from "react-router-dom";
 import StateContext from "../StateContext";
 
-const style = {
-  width: "16rem",
-  display: "flex",
-  margin: "auto",
-  marginTop: "25px"
-};
-
 function Home() {
   const appState = useContext(StateContext);
-  const [posts, setPosts] = useState();
-  const { username } = useParams;
+  const [date, setDate] = useState(new Date());
 
-  // useEffect(() => {
-  //   async function fetchBalance() {
-  //     try {
-  //       const response = await Axios.get(`/profile/${username}/posts`);
-  //       setPosts(response.data);
-  //       setIsLoading(false);
-  //     } catch (e) {
-  //       console.log("There was a problem");
-  //     }
-  //   }
-  //   fetchBalance();
-  // }, []);
+  useEffect(() => {
+    var timer = setInterval(() => setDate(new Date()), 1000);
+
+    return function cleanup() {
+      clearInterval(timer);
+    };
+  });
 
   return (
     <Page title="Home Page">
@@ -36,7 +23,7 @@ function Home() {
             Welcome, <strong>{appState.user.username}!</strong>
           </h5>
         </div>
-        <img className="card-img-top" src="./components/bank.png" style={style} alt="Card image cap"></img>
+        <img className="card-img-top" src="./components/bank.png" alt="Card image cap"></img>
         <div className="card-body">
           <h5 className="card-title"></h5>
           <p className="card-text">Select an Action</p>
@@ -51,7 +38,8 @@ function Home() {
           </Link>
         </div>
         <div className="card-footer text-muted">
-          <strong>Current Balance: $ ...</strong>
+          <strong>Time: </strong> {date.toLocaleTimeString()} <strong>Date: </strong>
+          {date.toLocaleDateString()}
         </div>
       </div>
     </Page>

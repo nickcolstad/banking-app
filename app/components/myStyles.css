@@ -121,3 +121,10 @@
 .form-group {
   position: relative;
 }
+
+.card-img-top {
+  width: 16rem;
+  display: flex;
+  margin: auto;
+  margin-top: 25px;
+}

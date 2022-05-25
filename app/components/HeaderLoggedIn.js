@@ -33,11 +33,11 @@ function HeaderLoggedIn(props) {
             Withdraw
           </Link>
         </li>
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <Link className="nav-link" to={`/manage/${appState.user.username}`}>
             Manage Funds
           </Link>
-        </li>
+        </li> */}
         <li className="nav-item">
           <Link className="nav-link" to={`/alldata/${appState.user.username}`}>
             All Data

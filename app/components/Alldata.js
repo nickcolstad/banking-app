@@ -63,13 +63,6 @@ function Alldata() {
     return bal;
   }
 
-  // img styling
-  const style = {
-    width: "32px",
-    height: "32px",
-    borderRadius: "16px"
-  };
-
   if (state.isLoading) {
     return <div>Loading...</div>;
   }
@@ -81,12 +74,13 @@ function Alldata() {
           <h2>
             <img className="avatar-small" src={profileData.profileAvatar} /> {profileData.profileUsername}
           </h2>
-          <div className="card">
-            <div className="card-body">Current Balance: ${addBalance(posts)}</div>
-          </div>
+
           <div className="profile-nav nav nav-tabs pt-2 mb-4">
             <a href="#" className="active nav-item nav-link">
               Transactions: {profileData.counts.postCount}
+            </a>
+            <a href="" className="nav-item nav-link">
+              Current Balance: ${addBalance(posts)}
             </a>
           </div>
           {/* Transactions */}
@@ -106,7 +100,19 @@ function Alldata() {
         </>
       )}
 
-      {state.feed.length == 0 && <div>No transactions yet</div>}
+      {state.feed.length == 0 && (
+        <>
+          <h2>
+            <img className="avatar-small" src={profileData.profileAvatar} /> {profileData.profileUsername}
+          </h2>
+          <div className="profile-nav nav nav-tabs pt-2 mb-4">
+            <a href="#" className="active nav-item nav-link">
+              Transactions: {profileData.counts.postCount}
+            </a>
+          </div>
+          <div>No transactions yet</div>
+        </>
+      )}
     </Page>
   );
 }
